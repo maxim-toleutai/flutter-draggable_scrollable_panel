@@ -30,6 +30,16 @@ class DraggableScrollablePanelController {
   _DraggableSheetExtent? get _extent =>
       _getExtent != null ? _getExtent!() : null;
 
+  bool get isAnimating => _animationController.isAnimating;
+
+  double get currentExtent => _extent == null ? 0 : _extent!.currentSize;
+
+  bool get isAtMin => _extent!.isAtMin;
+
+  bool get isAtMax => _extent!.isAtMax;
+
+  bool get canScroll => isAtMax;
+
   bool canSnapTo(int index) => _extent != null && _context != null
       ? _extent!.snaps.length - 1 > index
       : false;
