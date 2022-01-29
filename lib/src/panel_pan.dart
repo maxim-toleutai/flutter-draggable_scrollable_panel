@@ -21,7 +21,7 @@ class PanelPan extends StatelessWidget {
       child: Center(
         child: GestureDetector(
           onTap: onTap,
-          behavior: HitTestBehavior.translucent,
+          behavior: HitTestBehavior.deferToChild,
           child: SizedBox(
             height: height,
             width: 60,

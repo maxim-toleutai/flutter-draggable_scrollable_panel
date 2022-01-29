@@ -93,7 +93,7 @@ class DraggableScrollablePanelController {
       return false;
     }
 
-    if (!_processDrag(cancelDrag)) {
+    if (!_handleDrag(cancelDrag)) {
       return false;
     }
 
@@ -209,7 +209,7 @@ class DraggableScrollablePanelController {
             )
           : false;
 
-  bool _processDrag([bool cancel = false]) {
+  bool _handleDrag([bool cancel = false]) {
     if (_scrollController.position._dragCancelCallback != null) {
       if (cancel) {
         _scrollController.position._cancelDrag();

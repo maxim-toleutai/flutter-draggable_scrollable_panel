@@ -70,58 +70,90 @@ class _ExampleScreenState extends State<ExampleScreen>
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: SlidingScrollPanel(
-        snaps: [
-          DraggableSnap.defaultSpeed(position: 0.2),
-          DraggableSnap.defaultSpeed(position: 0.5),
-          // DraggableSnap.defaultSpeed(position: 0.9),
-        ],
-        controller: _controller,
-        minExtent: 0.2,
-        backgroundColor: Colors.blueGrey,
-        // snapToMax: false,
-        backdropColor: Colors.black,
-        backdropInterval: const Interval(
-          0.5,
-          1.0,
-        ),
-        backdropOpacity: 0.7,
-        backdropDismissible: true,
-        backdropIgnorePointer: true,
-        withBackdrop: true,
-        withPan: true,
-        panColor: Colors.white,
-        onDismiss: () => false,
-        builder: (context, scrollController, _) => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: CustomScrollView(
-            physics: const BouncingScrollPhysics(),
-            controller: scrollController,
-            slivers: [
-              SliverToBoxAdapter(
-                child: Builder(
-                  builder: (_) {
-                    print('build ${i++}');
-                    return SizedBox(height: 20);
-                  },
-                ),
-              ),
-              SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (_, index) => Container(
-                    height: 40,
-                    margin: const EdgeInsets.symmetric(vertical: 10),
-                    width: double.infinity,
-                    decoration: const BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.all(Radius.circular(10))),
-                  ),
-                  childCount: 50,
-                ),
-              ),
+      child: Stack(
+        children: [
+          SlidingScrollPanel(
+            snaps: [
+              DraggableSnap.defaultSpeed(position: 0.2),
+              DraggableSnap.defaultSpeed(position: 0.5),
+              // DraggableSnap.defaultSpeed(position: 0.9),
             ],
+            controller: _controller,
+            minExtent: 0.2,
+            backgroundColor: Colors.blueGrey,
+            // snapToMax: false,
+            backdropColor: Colors.black,
+            backdropInterval: const Interval(
+              0.5,
+              1.0,
+            ),
+            backdropOpacity: 0.7,
+            backdropDismissible: true,
+            backdropIgnorePointer: true,
+            withBackdrop: true,
+            withPan: true,
+            panColor: Colors.white,
+            onDismiss: () => false,
+            builder: (context, scrollController, _) => Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: CustomScrollView(
+                physics: const BouncingScrollPhysics(),
+                controller: scrollController,
+                slivers: [
+                  SliverToBoxAdapter(
+                    child: Builder(
+                      builder: (_) {
+                        print('build ${i++}');
+                        return SizedBox(height: 20);
+                      },
+                    ),
+                  ),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (_, index) => Container(
+                        height: 40,
+                        margin: const EdgeInsets.symmetric(vertical: 10),
+                        width: double.infinity,
+                        decoration: const BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(10))),
+                      ),
+                      childCount: 50,
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
+          Positioned(
+            right: 20,
+            bottom: 60,
+            child: Column(
+              children: [
+                FloatingActionButton(
+                  onPressed: () => _controller.expand(),
+                  backgroundColor: Colors.lightBlueAccent,
+                  child: const Center(
+                    child: Icon(
+                      Icons.arrow_upward_rounded,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 8),
+                FloatingActionButton(
+                  onPressed: () => _controller.dismiss(),
+                  backgroundColor: Colors.lightBlueAccent,
+                  child: const Center(
+                    child: Icon(
+                      Icons.arrow_downward_rounded,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

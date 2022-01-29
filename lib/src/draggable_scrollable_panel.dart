@@ -15,7 +15,7 @@ part 'extent.dart';
 part 'notification.dart';
 part 'simulations/snapping.dart';
 part 'controllers/scroll.dart';
-part 'controllers/pane.dart';
+part 'controllers/basic.dart';
 part 'snap.dart';
 
 class DraggableScrollablePanel extends StatefulWidget {

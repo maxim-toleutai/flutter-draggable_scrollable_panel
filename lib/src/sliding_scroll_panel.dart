@@ -50,6 +50,8 @@ class SlidingScrollPanel extends StatefulWidget {
     this.panAlwaysVisible = false,
     this.boxShadow,
     this.onDismiss,
+    this.aboveChildren,
+    this.belowChildren,
     Key? key,
   })  : assert(withBackdrop ? backdropColor != null : true),
         assert(withPan ? panColor != null : true),
@@ -77,6 +79,8 @@ class SlidingScrollPanel extends StatefulWidget {
   final bool panAlwaysVisible;
   final List<BoxShadow>? boxShadow;
   final FutureOr<bool> Function()? onDismiss;
+  final List<Widget>? aboveChildren;
+  final List<Widget>? belowChildren;
 
   @override
   _SlidingScrollPanelState createState() => _SlidingScrollPanelState();
@@ -185,8 +189,8 @@ class _SlidingScrollPanelState extends State<SlidingScrollPanel>
 
   void _handleDismissListener() {
     if (!_animationController.isAnimating &&
-        _animationController.value == widget.minExtent &&
-        !_isHandlingDismiss) {
+        !_isHandlingDismiss &&
+        _animationController.value - 0.0000000000001 <= widget.minExtent) {
       _handleDismiss();
     }
   }
@@ -265,31 +269,33 @@ class _SlidingScrollPanelState extends State<SlidingScrollPanel>
                 : _buildContent(context, scrollController),
       );
 
-  Widget _buildBody(BuildContext context) {
-    return widget.topOffset != null
-        ? Padding(
-            padding: EdgeInsets.only(top: widget.topOffset!),
-            child: _buildSheet(context),
-          )
-        : _buildSheet(context);
-  }
+  Widget _buildBody(BuildContext context) => widget.topOffset != null
+      ? Padding(
+          padding: EdgeInsets.only(top: widget.topOffset!),
+          child: _buildSheet(context),
+        )
+      : _buildSheet(context);
+
+  Widget _buildBackdrop(BuildContext context) => _PanelBackdrop(
+        animationController: _animationController,
+        action: _handleBackdropAction,
+        ignorePointer: widget.backdropIgnorePointer,
+        backgroundColor: widget.backdropColor,
+        opacity: widget.backdropOpacity,
+        interval: widget.backdropInterval,
+      );
 
   @override
-  Widget build(BuildContext context) {
-    return widget.withBackdrop
-        ? Stack(
-            children: [
-              _PanelBackdrop(
-                animationController: _animationController,
-                action: _handleBackdropAction,
-                ignorePointer: widget.backdropIgnorePointer,
-                backgroundColor: widget.backdropColor,
-                opacity: widget.backdropOpacity,
-                interval: widget.backdropInterval,
-              ),
-              _buildBody(context),
-            ],
-          )
-        : _buildBody(context);
-  }
+  Widget build(BuildContext context) => widget.withBackdrop ||
+          widget.aboveChildren != null ||
+          widget.belowChildren != null
+      ? Stack(
+          children: [
+            if (widget.belowChildren != null) ...widget.belowChildren!,
+            if (widget.withBackdrop) _buildBackdrop(context),
+            _buildBody(context),
+            if (widget.aboveChildren != null) ...widget.aboveChildren!,
+          ],
+        )
+      : _buildBody(context);
 }

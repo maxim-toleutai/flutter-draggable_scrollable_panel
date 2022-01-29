@@ -31,7 +31,6 @@ class _DraggableScrollableSheetScrollController extends ScrollController {
     description.add('extent: ${_getExtent!()}');
   }
 
-
   @override
   _DraggableScrollableSheetScrollPosition get position =>
       super.position as _DraggableScrollableSheetScrollPosition;
@@ -60,7 +59,6 @@ class _DraggableScrollableSheetScrollPosition
   VoidCallback? _dragCancelCallback;
   VoidCallback? _ballisticCancelCallback;
 
-
   bool get listShouldScroll => pixels > 0.0;
 
   _DraggableSheetExtent get extent => getExtent();
@@ -77,15 +75,11 @@ class _DraggableScrollableSheetScrollPosition
   }
 
   @override
-  bool applyContentDimensions(double minScrollSize, double maxScrollSize) {
-    // We need to provide some extra size if we haven't yet reached the max or
-    // min sizes. Otherwise, a list with fewer children than the size of
-    // the available space will get stuck.
-    return super.applyContentDimensions(
-      minScrollSize - extent.additionalMinSize,
-      maxScrollSize + extent.additionalMaxSize,
-    );
-  }
+  bool applyContentDimensions(double minScrollSize, double maxScrollSize) =>
+      super.applyContentDimensions(
+        minScrollSize - extent.additionalMinSize,
+        maxScrollSize + extent.additionalMaxSize,
+      );
 
   @override
   void applyUserOffset(double delta) {
@@ -157,8 +151,7 @@ class _DraggableScrollableSheetScrollPosition
       debugLabel: objectRuntimeType(this, '_DraggableScrollableSheetPosition'),
       vsync: context.vsync,
     );
-    // Stop the ballistic animation if a new activity starts.
-    // See: [beginActivity].
+
     _ballisticCancelCallback = ballisticController.stop;
     double lastPosition = extent.currentPixels;
     void _tick() {
@@ -187,9 +180,7 @@ class _DraggableScrollableSheetScrollPosition
   }
 
   @override
-  @override
   Drag drag(DragStartDetails details, VoidCallback dragCancelCallback) {
-    // Save this so we can call it later if we have to [goBallistic] on our own.
     _dragCancelCallback = dragCancelCallback;
     if (extent.animating && extent.animationController.isAnimating) {
       extent.animationController.stop(canceled: true);
