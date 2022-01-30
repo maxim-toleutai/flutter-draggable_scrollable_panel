@@ -93,6 +93,7 @@ class _ExampleScreenState extends State<ExampleScreen>
             withBackdrop: true,
             withPan: true,
             panColor: Colors.white,
+            animateToInitial: true,
             onDismiss: () => false,
             builder: (context, scrollController, _) => Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),

@@ -48,6 +48,7 @@ class SlidingScrollPanel extends StatefulWidget {
     this.backdropColor,
     this.panColor,
     this.panAlwaysVisible = false,
+    this.animateToInitial = false,
     this.boxShadow,
     this.onDismiss,
     this.aboveChildren,
@@ -77,6 +78,7 @@ class SlidingScrollPanel extends StatefulWidget {
   final Color? backdropColor;
   final Color? panColor;
   final bool panAlwaysVisible;
+  final bool animateToInitial;
   final List<BoxShadow>? boxShadow;
   final FutureOr<bool> Function()? onDismiss;
   final List<Widget>? aboveChildren;
@@ -95,6 +97,7 @@ class _SlidingScrollPanelState extends State<SlidingScrollPanel>
   late Animation<double> _panOpacityAnimation;
   late Animation<BorderRadius?> _borderRadiusAnimation;
 
+  bool _initialized = false;
   bool _isSetAnimations = false;
   bool _isHandlingDismiss = false;
 
@@ -115,6 +118,12 @@ class _SlidingScrollPanelState extends State<SlidingScrollPanel>
 
     _panelController._updatePanel = _externalUpdate;
     _setupDismissHandler();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      _initialized = true;
+      if (mounted) {
+        setState(() {});
+      }
+    });
   }
 
   @override
@@ -190,7 +199,7 @@ class _SlidingScrollPanelState extends State<SlidingScrollPanel>
   void _handleDismissListener() {
     if (!_animationController.isAnimating &&
         !_isHandlingDismiss &&
-        _animationController.value - 0.0000000000001 <= widget.minExtent) {
+        _animationController.value - 0.000000000002 <= widget.minExtent) {
       _handleDismiss();
     }
   }
@@ -235,7 +244,9 @@ class _SlidingScrollPanelState extends State<SlidingScrollPanel>
 
   Widget _buildSheet(BuildContext context) => DraggableScrollablePanel(
         snaps: widget.snaps,
-        initialExtent: widget.initialExtent,
+        initialExtent: widget.animateToInitial && !_initialized
+            ? widget.minExtent
+            : widget.initialExtent,
         maxExtent: widget.maxExtent,
         minExtent: widget.minExtent,
         controller: _panelController,
